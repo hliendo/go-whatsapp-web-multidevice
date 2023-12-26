@@ -7,9 +7,28 @@ services:
         max-size: "200k"
         max-file: "10"
     image: "aldinokemal2104/go-whatsapp-web-multidevice:latest"
+    container_name: whatsapp_go
     build:
       context: .
       dockerfile: ./docker/golang.Dockerfile
     restart: 'always'
     ports:
-      - "3000:3000"
+      - "3010:3000"
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - TIMEZONE=America/Argentina/Buenos_Aires
+    volumes:
+      #
+      # Agregué Localtime para que todos los containers tengan la misma fecha y hora
+      #
+      - /etc/localtime:/etc/localtime:ro
+      - ./data:/app/storages
+      - ./statics:/app/statics
+    networks:
+     - caddy
+    #command: ["-b=admin:trulala", "--webhook=http://handler:3020/handler","--debug=true", "--os=Chrome"]
+    command: ["-b=admin:trulala", "--webhook=http://handler:3020/handler","--debug=true"]
+
+networks:
+  caddy:
+    external: true
